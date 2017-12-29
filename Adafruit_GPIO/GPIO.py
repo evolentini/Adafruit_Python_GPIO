@@ -416,6 +416,9 @@ def get_platform_gpio(**keywords):
     if plat == Platform.RASPBERRY_PI:
         import RPi.GPIO
         return RPiGPIOAdapter(RPi.GPIO, **keywords)
+    elif plat == Platform.NANO_PI:
+        import RPi.GPIO
+        return RPiGPIOAdapter(RPi.GPIO, **keywords)
     elif plat == Platform.BEAGLEBONE_BLACK:
         import Adafruit_BBIO.GPIO
         return AdafruitBBIOAdapter(Adafruit_BBIO.GPIO, **keywords)

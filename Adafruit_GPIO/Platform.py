@@ -26,6 +26,7 @@ UNKNOWN          = 0
 RASPBERRY_PI     = 1
 BEAGLEBONE_BLACK = 2
 MINNOWBOARD      = 3
+NANO_PI          = 4
 
 def platform_detect():
     """Detect if running on the Raspberry Pi or Beaglebone Black and return the
@@ -34,6 +35,11 @@ def platform_detect():
     pi = pi_version()
     if pi is not None:
         return RASPBERRY_PI
+
+    # Handle Friendly Elect Nano Pi
+    pi = nano_pi_version()
+    if pi is not None:
+        return NANO_PI
 
     # Handle Beaglebone Black
     # TODO: Check the Beaglebone Black /proc/cpuinfo value instead of reading
@@ -107,4 +113,31 @@ def pi_version():
         return 3
     else:
         # Something else, not a pi.
+        return None
+
+def nano_pi_version():
+    """Detect the version of the NanoPi.  Returns either 1, 2 or
+    None depending on if it's a Raspberry Pi 1 (model A, B, A+, B+),
+    Raspberry Pi 2 (model B+), or not a Raspberry Pi.
+    """
+    # Check /proc/cpuinfo for the Hardware field value.
+    # sun8i is M1, M1 Plus, NEO, AIR 
+    # sun50iw2 is pi M1 Plus2, NEO2, NEO Plus2
+    # Anything else is not a NanoPi.
+    with open('/proc/cpuinfo', 'r') as infile:
+        cpuinfo = infile.read()
+    # Match a line like 'Hardware   : BCM2709'
+    match = re.search('^Hardware\s+:\s+(\w+)$', cpuinfo,
+                      flags=re.MULTILINE | re.IGNORECASE)
+    if not match:
+        # Couldn't find the hardware, assume it isn't a nano_pi.
+        return None
+    if match.group(1) == 'sun8i':
+        # Boards M1, M1 Plus, NEO, AIR
+        return 1
+    elif match.group(1) == 'sun50iw2':
+        #  Boards M1 Plus2, NEO2, NEO Plus2
+        return 2
+    else:
+        # Something else, not a nano_pi.
         return None

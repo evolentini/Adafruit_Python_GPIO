@@ -52,6 +52,9 @@ def get_default_bus():
     elif plat == Platform.BEAGLEBONE_BLACK:
         # Beaglebone Black has multiple I2C buses, default to 1 (P9_19 and P9_20).
         return 1
+    elif plat == Platform.NANO_PI:
+        # Nano PI uses I2C bus 0.
+        return 0
     else:
         raise RuntimeError('Could not determine default I2C bus for platform.')
 
