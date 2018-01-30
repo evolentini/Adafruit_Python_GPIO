@@ -169,7 +169,7 @@ class RPiGPIOAdapter(BaseGPIO):
             raise ValueError('Unexpected value for mode.  Must be BOARD or BCM.')
         else:
             # Default to BCM numbering if not told otherwise.
-            rpi_gpio.setmode(rpi_gpio.BCM)
+            rpi_gpio.setmode(rpi_gpio.BOARD)
         # Define mapping of Adafruit GPIO library constants to RPi.GPIO constants.
         self._dir_mapping = { OUT:      rpi_gpio.OUT,
                               IN:       rpi_gpio.IN }
